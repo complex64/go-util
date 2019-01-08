@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func ContextWithCancelSignals(sig ...os.Signal) context.Context {
+func ContextWithCancelSignals(sig ...os.Signal) (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithCancel(context.Background())
 	exit := make(chan os.Signal, 1)
 	signal.Notify(exit, sig...)
@@ -15,7 +15,7 @@ func ContextWithCancelSignals(sig ...os.Signal) context.Context {
 		<-exit
 		cancel()
 	}()
-	return ctx
+	return ctx, cancel
 }
 
 func CallWithTimeout(parentCtx context.Context, timeout time.Duration, function func(context.Context) error) error {
