@@ -1,8 +1,7 @@
-package utils
+package ctxutil
 
 import (
 	"context"
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -29,16 +28,5 @@ func CallWithTimeout(parentCtx context.Context, timeout time.Duration, function 
 		return err
 	case <-ctx.Done():
 		return ctx.Err()
-	}
-}
-
-func ListenUntilCancelled(ctx context.Context, server *http.Server, shutdownTimeout time.Duration) error {
-	errors := make(chan error)
-	go func() { errors <- server.ListenAndServe() }()
-	select {
-	case err := <-errors:
-		return err
-	case <-ctx.Done():
-		return CallWithTimeout(ctx, shutdownTimeout, server.Shutdown)
 	}
 }
