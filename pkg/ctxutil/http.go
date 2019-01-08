@@ -13,6 +13,6 @@ func ListenUntilCancelled(ctx context.Context, server *http.Server, shutdownTime
 	case err := <-errors:
 		return err
 	case <-ctx.Done():
-		return CallWithTimeout(ctx, shutdownTimeout, server.Shutdown)
+		return CallWithTimeout(context.Background(), shutdownTimeout, server.Shutdown)
 	}
 }
